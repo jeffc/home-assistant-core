@@ -88,6 +88,19 @@ class User:
         for attr_to_invalidate in ("permissions", "is_admin"):
             self.__dict__.pop(attr_to_invalidate, None)
 
+    @property
+    def hass_username(self) -> str | None:
+        """Return the user's homeassistant-provided username."""
+
+        # get the "homeassistant" provider, if it exists
+        hp = list(
+            filter(lambda c: c.auth_provider_type == "homeassistant", self.credentials)
+        )
+        if len(hp) > 0:
+            assert type(hp[0].data["username"]) is str
+            return hp[0].data["username"]
+        return None
+
 
 @attr.s(slots=True)
 class RefreshToken:

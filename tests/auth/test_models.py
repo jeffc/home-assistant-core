@@ -1,6 +1,7 @@
 """Tests for the auth models."""
 
-from homeassistant.auth import models, permissions
+from homeassistant.auth import auth_manager_from_config, models, permissions
+from homeassistant.core import HomeAssistant
 
 
 def test_owner_fetching_owner_permissions() -> None:
@@ -61,3 +62,14 @@ def test_cache_cleared_on_group_change() -> None:
 
     user.is_active = False
     assert user.is_admin is False
+
+
+async def test_hass_username(hass: HomeAssistant) -> None:
+    """Test that hass_username correctly pulls the username from the hass provider."""
+    manager = await auth_manager_from_config(hass, [{"type": "homeassistant"}], [])
+    hass_provider = manager.auth_providers[0]
+    credentials = await hass_provider.async_get_or_create_credentials(
+        {"username": "hello"}
+    )
+    user = await manager.async_get_or_create_user(credentials)
+    assert user.hass_username == "hello"

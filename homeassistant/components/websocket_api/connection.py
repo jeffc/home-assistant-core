@@ -84,8 +84,8 @@ class ActiveConnection:
             {
                 "connection_uuid": self.connection_uuid,
                 "remote_ip": remote,
-                "username": user.name,
-                "user_agent": user_agent,
+                "username": self.user and self.user.hass_username or "",
+                "user_agent": user_agent or "",
             },
         )
         current_connection.set(self)
@@ -270,8 +270,8 @@ class ActiveConnection:
             {
                 "connection_uuid": self.connection_uuid,
                 "remote_ip": remote,
-                "username": self.user.name,
-                "user_agent": user_agent,
+                "username": self.user and self.user.hass_username or "",
+                "user_agent": user_agent or "",
             },
         )
 
